@@ -11,8 +11,38 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		return new Response('Hello World!');
-	},
+var src_default = {
+	async fetch(request, env, ctx){
+	   console.log("Logging: " + request.url)
+
+	   const responseMap = {
+		1: "First random response",
+		2: "Second random response",
+		3: "Third random response",
+		4: "Forth random response",
+	  };
+
+		if(request.method == "POST"){
+			return new Response('{ "json": "content" }', {
+				headers: {
+					'content-type': 'application/json'
+				},
+			});
+		}
+
+		function getRandomInt(min, max) {
+			const minCeiled = Math.ceil(min);
+			const maxFloored = Math.floor(max);
+			return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+		  }
+
+		const rnnumber = getRandomInt(1,5);
+		const rnresponse = responseMap[rnnumber];
+
+	   return new Response("Based on the random number " + rnnumber + ", your random response is " + rnresponse);
+	}
+};
+
+export {
+    src_default as default
 };
